@@ -1,0 +1,154 @@
+openapi: 3.0.3
+info:
+  title: Demo
+  description: Example application.
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080/v1'
+tags:
+  - name: Demo
+paths:
+  '/hello-world':
+    get:
+      summary: Respond with "Hello World"
+      description: An example that returns a JSON response message "Hello World".
+      operationId: helloWorld
+      tags:
+        - Demo
+      responses:
+        '200':
+          $ref: '#/components/responses/HelloWorldResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+  '/users/{userId}:greet':
+    get:
+      summary: Greet user
+      description: Return a greeting for a user based on time of day.
+      operationId: greetUser
+      tags:
+        - Demo
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: A user ID.
+          example: 123456
+      responses:
+        '200':
+          $ref: '#/components/responses/GreetResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+components:
+  responses:
+    ErrorResponse:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorView'
+          examples:
+            '400 Bad Request':
+              value: |-
+                {
+                  "timestamp": "2019-01-17T16:12:45.977+0000",
+                  "status": 400,
+                  "error": "Bad Request",
+                  "message": "Something went wrong processing this request",
+                  "path": "/my-endpoint-with-exceptions"
+                }
+            '500 Server Error':
+              value: |-
+                {
+                  "timestamp": "2019-01-17T16:12:45.977+0000",
+                  "status": 500,
+                  "error": "Server Error",
+                  "message": "Unable to process request at this time",
+                  "path": "/my-endpoint-with-exceptions"
+                }
+    GreetResponse:
+      description: A user greeting response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserGreeting'
+          examples:
+            'Morning':
+              value: |-
+                {
+                  "message": "Good morning Mr. Smith"
+                }
+            'Afternoon':
+              value: |-
+                {
+                  "message": "Good afternoon Mr. Smith"
+                }
+            'Evening':
+              value: |-
+                {
+                  "message": "Good evening Mr. Smith"
+                }
+    HelloWorldResponse:
+      description: Hello World
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HelloWorld'
+          example:
+            {
+              "message": "Hello World"
+            }
+  schemas:
+    ErrorView:
+      description: A common error response for all API errors.
+      type: object
+      properties:
+        timestamp:
+          type: string
+          example: '2019-01-17T16:12:45.977+0000'
+        status:
+          type: integer
+          example: 400
+        error:
+          type: string
+          example: Bad Request
+        message:
+          type: string
+          example: Something went wrong processing this request
+        path:
+          type: string
+          example: /my-endpoint-with-exceptions
+      additionalProperties: false
+      required:
+        - timestamp
+        - status
+        - error
+        - path
+    HelloWorld:
+      description: A Hello World message.
+      type: object
+      properties:
+        message:
+          type: string
+          example: Hello World
+          enum:
+            - Hello World
+      additionalProperties: false
+      required:
+        - message
+    UserGreeting:
+      description: A time-of-day-based user greeting.
+      type: object
+      properties:
+        greeting:
+          type: string
+          example: Good morning Mr. Smith
+        timestamp:
+          type: string
+          example: '2019-01-17T16:12:45.977+0000'
+      additionalProperties: false
+      required:
+        - greeting
+        - timestamp

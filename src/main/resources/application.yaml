@@ -1,0 +1,32 @@
+logging:
+  level:
+    root: info
+    com.example.demo: debug
+
+spring:
+  application:
+    name: 'Demo'
+  jackson:
+    default-property-inclusion: non_null
+  profiles:
+    active: local
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
+springdoc:
+  auto-tag-classes: false
+  remove-broken-reference-definitions: false
+  swagger-ui:
+    use-root-path: true
+    display-request-duration: true
+    default-models-expand-depth: 1
+    default-model-expand-depth: 1
